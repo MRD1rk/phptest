@@ -1,12 +1,18 @@
-<div id="index-index" class="content">
-    {if $tasks}
-        <h1 class="text-center">Список задач</h1>
-        {include file="tasks/tasks-sort.tpl"}
-        {include file="tasks/tasks-list.tpl"}
-    {else}
-        <div class="text-center">
-            <h4>Задач пока нет</h4>
-            <a class="btn btn-success" href="/task/add">Добавить новую задачу</a>
+<div id="compare_date_form">
+    <form method="post">
+        <div>
+            <textarea required class="date" name="date"></textarea>
         </div>
-    {/if}
+        <div class="w-25">
+            <button>POST</button>
+            <button type="button" class="ajax_send_date">AJAX</button>
+        </div>
+    </form>
+    <div id="result">
+        {if isset($result)}
+            <span>Результат:&nbsp;{$result}&nbsp;дня</span>
+        {/if}
+    </div>
 </div>
+<style>
+</style>
