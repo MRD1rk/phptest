@@ -162,11 +162,6 @@ class CompareDate extends Model
         ];
     }
 
-    public function checkDate($first_operand, $second_operand)
-    {
-        $pattern = '#^\d{1,2}\.\d{1,2}\.\d{4}$#';
-        return preg_match($pattern, $first_operand) && preg_match($pattern, $second_operand);
-    }
 
     public function processCompare($date)
     {
@@ -174,12 +169,12 @@ class CompareDate extends Model
         $date = explode('-', $date);
         $first_operand = $date[0];
         $second_operand = $date[1];
-        if (!$this->checkDate($first_operand, $second_operand)) {
+        $datetime1 = date_create($first_operand);
+        $datetime2 = date_create($second_operand);
+        if (!$datetime1 || !$datetime2) {
             $this->setMessage('Не корректный формат даты, введите дату в формате <strong>dd.mm.yyyy</strong>');
             return false;
         }
-        $datetime1 = date_create($first_operand);
-        $datetime2 = date_create($second_operand);
         $start = microtime(true);
         $different = $this->dateDifference($datetime1, $datetime2);
         $end = microtime(true) - $start;
