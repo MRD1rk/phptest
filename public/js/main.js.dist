@@ -1,0 +1,110 @@
+$(function () {
+    let current_page = 1;
+    $('#login-form').on('submit', function (e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: '/login',
+            dataType: 'json',
+            data: data,
+            success: function (data) {
+                showAlert(data.message, data.status);
+                if (data.status) {
+                    setTimeout(function () {
+                        location.href = '/';
+                    }, 2600);
+                }
+            }
+        })
+    });
+
+    $('body').on('change', '#task-order', function () {
+        let order = $(this).val();
+        let params = {};
+        params.order = order;
+        params.page = current_page;
+        loadTasks(params);
+    });
+
+    $('body').on('change', '#users-order', function () {
+        let order = $(this).val();
+        let params = {};
+        params.order = order;
+        params.page = current_page;
+        loadUsers(params);
+    });
+
+    $('body').on('click', '#tasks-pagination a', function (e) {
+        e.preventDefault();
+        let page = $(this).data('page');
+        if (current_page === page)
+            return;
+        current_page = page;
+        let params = $(this).data('params');
+        params.page = page;
+        loadTasks(params);
+    });
+
+    $('body').on('click', '#paginator a', function (e) {
+        e.preventDefault();
+        let page = $(this).data('page');
+        if (current_page === page)
+            return;
+        current_page = page;
+        let params = $(this).data('params');
+        params.page = page;
+        loadUsers(params);
+    });;
+});
+
+
+/**
+ *
+ * @param text
+ * @param status available values => ['true','false'];
+ */
+function showAlert(text, status = true) {
+    let alert_class = 'success';
+    if (!status)
+        alert_class = 'danger';
+    let html = '<div id="alert" class="alert alert-' + alert_class + '"><button type="button" class="close" data-dismiss="alert">&times;</button>'
+        + text + '</div>';
+    $('#alert').replaceWith(html);
+    $('#alert').fadeIn();
+    let height = $('#alert').outerHeight();
+    clearTimeout();
+    setTimeout(function () {
+        $('#alert').animate({
+            'top': -height
+        }, 700);
+    }, 2500);
+}
+
+function loadTasks(params) {
+    $.ajax({
+        type: 'POST',
+        url: '/task/load',
+        dataType: 'json',
+        data: params,
+        success: function (data) {
+            if (data.status) {
+                $('.tasks-list').replaceWith(data.content);
+            }
+        }
+    })
+}
+
+function loadUsers(params) {
+    $.ajax({
+        type: 'POST',
+        url: '/user/load',
+        dataType: 'json',
+        data: params,
+        success: function (data) {
+            if (data.status) {
+                $('.users-list').replaceWith(data.content);
+            }
+        }
+    })
+}
