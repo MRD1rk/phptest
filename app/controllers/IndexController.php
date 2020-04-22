@@ -11,7 +11,7 @@ use Models\Role;
 
 class IndexController extends BaseController
 {
-    public function compareAction()
+    public function indexAction()
     {
         if ($this->request->isPost()) {
             $date = $this->request->getPost('date');
